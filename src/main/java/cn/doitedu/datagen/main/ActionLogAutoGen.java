@@ -61,7 +61,7 @@ public class ActionLogAutoGen {
 
     public static void main(String[] args) throws Exception {
 
-        if (args.length < 1) {
+        if (args.length < 2) {
             System.err.println("请指定配置文件的路径");
             System.exit(1);
         }
@@ -75,7 +75,7 @@ public class ActionLogAutoGen {
         boolean sinkToKafka = Boolean.parseBoolean(properties.getProperty("sinkToKafka"));
         String topic = properties.getProperty("topic");
         String host = properties.getProperty("host");
-        String log4jConf = properties.getProperty("log4jConf");
+        String log4jConf = args[1];
 
         System.out.printf("读取到配置：log4jConf = %s ,isInitial = %s , needNewUser = %d , needSave = %s  , userDataPath =  %s  ,  sinkToKafka =  %s  , topic =  %s  ,  host =  %s \n"
                 ,log4jConf,isInitial,needNewUser,needSave,hisUserDataPath,sinkToKafka,topic,host);

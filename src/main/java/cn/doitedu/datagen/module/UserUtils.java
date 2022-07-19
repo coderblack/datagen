@@ -35,7 +35,7 @@ public class UserUtils {
         return users;
     }
 
-    public static String addNewUsers(String userDataPath,HashMap<String,LogBean> users,int cnt,boolean save) throws IOException {
+    public static String addNewUsers(String userDataPath,HashMap<String,LogBean> users,int cnt,boolean save ,List<String> gpsList) throws IOException {
 
         System.out.println("新用户开始生成, 历史用户最大id：" + users.size() + "本次将增加用户：" + cnt);
         int hisMaxId = users.size();
@@ -50,8 +50,14 @@ public class UserUtils {
             // deviceid直接用account
             logBean.setDeviceId(RandomStringUtils.randomAlphabetic(4).toLowerCase()+"-"+RandomStringUtils.randomNumeric(4));
             logBean.setIp(RandomUtils.nextInt(10, 12) + "." + RandomUtils.nextInt(20, 22) + "." + RandomUtils.nextInt(100, 102) + "." + RandomUtils.nextInt(60, 66));
-            logBean.setLatitude(RandomUtils.nextDouble(22.0, 42.0));
-            logBean.setLongitude(RandomUtils.nextDouble(100.0, 120.0));
+
+            //logBean.setLatitude(RandomUtils.nextDouble(22.0, 42.0));
+            //logBean.setLongitude(RandomUtils.nextDouble(100.0, 120.0));
+            String[] gpsPair = gpsList.get(RandomUtils.nextInt(0, gpsList.size())).split(",");
+
+            logBean.setLatitude(Double.parseDouble(gpsPair[0])+RandomUtils.nextDouble(-0.000009,0.000009));
+            logBean.setLongitude(Double.parseDouble(gpsPair[1])+RandomUtils.nextDouble(-0.000009,0.000009));
+
             if (RandomUtils.nextInt(1, 10) % 4 == 0) {
                 String deviceType = androidDeviceTypes[RandomUtils.nextInt(0, androidDeviceTypes.length)];
                 logBean.setDeviceType(deviceType);

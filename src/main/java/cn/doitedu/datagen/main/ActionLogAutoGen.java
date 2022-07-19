@@ -67,7 +67,7 @@ public class ActionLogAutoGen {
         }
 
         Properties properties = new Properties();
-        properties.load(Files.newInputStream(Paths.get(args[0])));
+        properties.load(Files.newInputStream(Paths.get(args[0]+"/datagen.properties")));
         boolean isInitial = Boolean.parseBoolean(properties.getProperty("isInitial"));
         int needNewUser = Integer.parseInt(properties.getProperty("needNewUser"));
         boolean needSave = Boolean.parseBoolean(properties.getProperty("needSave"));
@@ -76,6 +76,9 @@ public class ActionLogAutoGen {
         String topic = properties.getProperty("topic");
         String host = properties.getProperty("host");
         String log4jConf = args[1];
+
+        List<String> gpsList = Files.readAllLines(Paths.get(args[0] + "/gps.txt"));
+
 
         System.out.printf("读取到配置：log4jConf = %s ,isInitial = %s , needNewUser = %d , needSave = %s  , userDataPath =  %s  ,  sinkToKafka =  %s  , topic =  %s  ,  host =  %s \n"
                 ,log4jConf,isInitial,needNewUser,needSave,hisUserDataPath,sinkToKafka,topic,host);
@@ -130,7 +133,7 @@ public class ActionLogAutoGen {
         if (needNewUser > 0) {
             System.out.println("准备生成增量新用户");
             // 添加新用户
-            UserUtils.addNewUsers(hisUserDataPath,hisUsers, needNewUser, needSave);
+            UserUtils.addNewUsers(hisUserDataPath, hisUsers, needNewUser, needSave ,gpsList);
         }
 
         // 转成带状态用户数据

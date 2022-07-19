@@ -55,8 +55,8 @@ public class UserUtils {
             //logBean.setLongitude(RandomUtils.nextDouble(100.0, 120.0));
             String[] gpsPair = gpsList.get(RandomUtils.nextInt(0, gpsList.size())).split(",");
 
-            logBean.setLatitude(Double.parseDouble(gpsPair[0])+RandomUtils.nextDouble(-0.000009,0.000009));
-            logBean.setLongitude(Double.parseDouble(gpsPair[1])+RandomUtils.nextDouble(-0.000009,0.000009));
+            logBean.setLatitude(Double.parseDouble(gpsPair[0])+RandomUtils.nextDouble(0,0.000009));
+            logBean.setLongitude(Double.parseDouble(gpsPair[1])+RandomUtils.nextDouble(0,0.000009));
 
             if (RandomUtils.nextInt(1, 10) % 4 == 0) {
                 String deviceType = androidDeviceTypes[RandomUtils.nextInt(0, androidDeviceTypes.length)];

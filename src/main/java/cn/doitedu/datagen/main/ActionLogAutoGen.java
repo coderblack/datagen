@@ -61,13 +61,14 @@ public class ActionLogAutoGen {
 
     public static void main(String[] args) throws Exception {
 
-        if (args.length < 2) {
-            System.err.println("请指定配置文件的路径");
-            System.exit(1);
+        String confPath = "./conf";
+
+        if (args.length >= 1) {
+            confPath = args[0];
         }
 
         Properties properties = new Properties();
-        properties.load(Files.newInputStream(Paths.get(args[0]+"/datagen.properties")));
+        properties.load(Files.newInputStream(Paths.get(confPath+"/datagen.properties")));
         boolean isInitial = Boolean.parseBoolean(properties.getProperty("isInitial"));
         int needNewUser = Integer.parseInt(properties.getProperty("needNewUser"));
         boolean needSave = Boolean.parseBoolean(properties.getProperty("needSave"));
@@ -75,16 +76,21 @@ public class ActionLogAutoGen {
         boolean sinkToKafka = Boolean.parseBoolean(properties.getProperty("sinkToKafka"));
         String topic = properties.getProperty("topic");
         String host = properties.getProperty("host");
-        String log4jConf = args[1];
-
-        List<String> gpsList = Files.readAllLines(Paths.get(args[0] + "/gps.txt"));
+        int threads = Integer.parseInt(properties.getProperty("threads"));
 
 
-        System.out.printf("读取到配置：log4jConf = %s ,isInitial = %s , needNewUser = %d , needSave = %s  , userDataPath =  %s  ,  sinkToKafka =  %s  , topic =  %s  ,  host =  %s \n"
-                ,log4jConf,isInitial,needNewUser,needSave,hisUserDataPath,sinkToKafka,topic,host);
 
+
+        System.out.printf("读取到配置：confPath = %s ,isInitial = %s , needNewUser = %d , needSave = %s  , userDataPath =  %s  ,  sinkToKafka =  %s  , topic =  %s  ,  host =  %s \n"
+                ,confPath,isInitial,needNewUser,needSave,hisUserDataPath,sinkToKafka,topic,host);
+
+
+        String log4jConf = confPath + "/log4j.properties";
         PropertyConfigurator.configure(log4jConf);
 
+        List<String> gpsList = Files.readAllLines(Paths.get(confPath + "/gps.txt"));
+
+        UserUtils.initial(confPath+"/events.txt");
 
         /*// 第一次运行（或者后期需要重新初始化），设置为true
         boolean isInitial = true;
@@ -142,11 +148,11 @@ public class ActionLogAutoGen {
         System.out.println("日活用户总数：" + wrapperedUsers.size() + "-------");
 
         // 多线程并行生成日志
-        genBatchToCollector(sinkToKafka, wrapperedUsers, 3, 5, topic, host);
+        genBatchToCollector(sinkToKafka, wrapperedUsers, threads,  topic, host);
 
     }
 
-    private static void genBatchToCollector(boolean sinkToKafka, List<LogBeanWrapper> wrapperedUsers, int threads, int logPerThrad, String topic, String host) {
+    private static void genBatchToCollector(boolean sinkToKafka, List<LogBeanWrapper> wrapperedUsers, int threads,  String topic, String host) {
         int partSize = wrapperedUsers.size() / threads;
 
         for (int i = 0; i < threads; i++) {

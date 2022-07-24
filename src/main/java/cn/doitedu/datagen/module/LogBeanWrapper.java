@@ -4,6 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
@@ -14,6 +19,8 @@ public class LogBeanWrapper {
 
     private boolean isExists = true;
     private boolean isPushback = false;
+
+    private List<String> visitedPages = new ArrayList<>();
 
     //private String currPage;
 

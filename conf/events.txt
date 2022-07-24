@@ -1,0 +1,6 @@
+{"eventId":"search","properties":[{"keywords":"多易教育"},{"keywords":"一文搞定flink教程"},{"keywords":"最强hadoop教程"},{"keywords":"最强spark教程"},{"keywords":"一文搞定kafka教程"},{"keywords":"一文搞定hvie"}]}
+{"eventId":"clickItem","properties":[{"itemId":""}]}
+{"eventId":"addCart","properties":[{"itemId":""}]}
+{"eventId":"thumbup","properties":[{"itemId":""}]}
+{"eventId":"favorite","properties":[{"itemId":""}]}
+{"eventId":"shareItem","properties":[{"itemId":"","method":"微信朋友圈"},{"itemId":"","method":"qq空间"},{"itemId":"","method":"头条"},{"itemId":"","method":"微博"},{"itemId":"","method":"抖音"}]}

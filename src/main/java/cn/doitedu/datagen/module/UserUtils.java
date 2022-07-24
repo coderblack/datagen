@@ -1,10 +1,12 @@
 package cn.doitedu.datagen.module;
 
 import com.alibaba.fastjson.JSON;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
+import javax.swing.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,6 +23,53 @@ public class UserUtils {
     public static String[] netTypes = {"5G","4G","WIFI"};
     public static String[] resolutions = {"1024*768","1280*768","2048*1366","1366*768"};
     public static String[] appVersions = {"2.1","2.5","2.6","2.8","3.0","3.2"};
+    public static String[] refers = {
+            "http://www.360.com/key=hadoop",
+            "http://www.360.com/key=多易spark",
+            "http://www.360.com/key=多易教育flink kafka",
+            "http://www.360.com/key=全网最强flink",
+            "http://www.360.com/key=多易教育spark",
+            "http://www.360.com/key=多易教育涛哥",
+            "http://www.360.com/key=多易教育行哥",
+            "http://www.360.com/key=多易教育星哥",
+            "http://www.360.com/key=多易教育雨哥",
+            "http://www.360.com/key=多易教育源哥",
+            "http://www.360.com/key=多易教育杰哥",
+
+            "http://www.baidu.com/key=hadoop",
+            "http://www.baidu.com/key=多易spark",
+            "http://www.baidu.com/key=多易教育flink kafka",
+            "http://www.baidu.com/key=全网最强flink",
+            "http://www.baidu.com/key=多易教育spark",
+            "http://www.baidu.com/key=多易教育涛哥",
+            "http://www.baidu.com/key=多易教育行哥",
+            "http://www.baidu.com/key=多易教育星哥",
+            "http://www.baidu.com/key=多易教育雨哥",
+            "http://www.baidu.com/key=多易教育源哥",
+            "http://www.baidu.com/key=多易教育杰哥",
+
+            "http://www.sogou.com/key=hadoop",
+            "http://www.sogou.com/key=多易spark",
+            "http://www.sogou.com/key=多易教育flink kafka",
+            "http://www.sogou.com/key=全网最强flink",
+            "http://www.sogou.com/key=多易教育spark",
+            "http://www.sogou.com/key=多易教育涛哥",
+            "http://www.sogou.com/key=多易教育行哥",
+            "http://www.sogou.com/key=多易教育星哥",
+            "http://www.sogou.com/key=多易教育雨哥",
+            "http://www.sogou.com/key=多易教育源哥",
+            "http://www.sogou.com/key=多易教育杰哥",
+            };
+
+    public static List<ActionEvent> actionEvents = new ArrayList<>();
+
+    public static void initial(String eventsPath) throws IOException {
+        List<String> lines = FileUtils.readLines(new File(eventsPath));
+        for (String line : lines) {
+            ActionEvent event = JSON.parseObject(line, ActionEvent.class);
+            actionEvents.add(event);
+        }
+    }
 
     public static HashMap<String,LogBean> loadHisUsers(File filePath) throws Exception {
         HashMap<String,LogBean> users = new HashMap<>();
@@ -117,6 +166,14 @@ public class UserUtils {
         return wrapper;
     }
 
+
+    public static String getExternalRefer(){
+        return  refers[RandomUtils.nextInt(0,refers.length)];
+    }
+
+    public static ActionEvent getRandomEvent(){
+        return actionEvents.get(RandomUtils.nextInt(0,actionEvents.size()));
+    }
 
 
 }

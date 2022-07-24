@@ -7,6 +7,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class LogRunnable implements Runnable {
     List<LogBeanWrapper> userPart;
@@ -34,9 +35,11 @@ public class LogRunnable implements Runnable {
                 LogBeanWrapper logBeanWrapper = userPart.get(RandomUtils.nextInt(0, userPart.size()));
 
                 // 每用户的随机日志条数
-                int eventCnt = RandomUtils.nextInt(5, 50);
+                int eventCnt = RandomUtils.nextInt(5, 200);
+                // 每用户的会话上限
+                int sessionMax = RandomUtils.nextInt(1,4);
                 for (int i = 0; i < eventCnt; i++) {
-                    if(logBeanWrapper.getSessionMax()>2) break;
+                    if(logBeanWrapper.getSessionMax()>sessionMax) break;
 
                     if (logBeanWrapper.isExists() ) {   // 关闭后的启动状态
                         logBeanWrapper.getLogBean().setEventId("launch");
@@ -60,7 +63,18 @@ public class LogRunnable implements Runnable {
                         // 生成页面加载事件
                         logBeanWrapper.getLogBean().setEventId("pageLoad");
                         HashMap<String, String> properties = new HashMap<String, String>();
-                        properties.put("pageId", "index");
+
+                        if(RandomUtils.nextInt(1,10)%3==0) {
+                            String pageId = "page" + StringUtils.leftPad(RandomUtils.nextInt(1, 3)+"",3,"0");
+                            properties.put("pageId", pageId);
+                            properties.put("referPage", UserUtils.getExternalRefer()); // 首次页面
+                            logBeanWrapper.getVisitedPages().add(pageId);
+                        }else{
+                            properties.put("pageId", "index");
+                            logBeanWrapper.getVisitedPages().add("index");
+                            properties.put("referPage", null); // 首次页面
+                        }
+
                         logBeanWrapper.getLogBean().setProperties(properties);
                         logBeanWrapper.getLogBean().setTimeStamp(System.currentTimeMillis());
                         collector.collect(JSON.toJSONString(logBeanWrapper.getLogBean()));
@@ -160,9 +174,11 @@ public class LogRunnable implements Runnable {
             wrapperBean.getLogBean().setEventId("pageload");
             HashMap<String, String> props = new HashMap<String, String>();
             props.put("pageId", pageId);
+            props.put("referPage",wrapperBean.getVisitedPages().get(RandomUtils.nextInt(0,wrapperBean.getVisitedPages().size())));
 
             wrapperBean.getLogBean().setProperties(props);
             wrapperBean.getLogBean().setTimeStamp(System.currentTimeMillis());
+            wrapperBean.getVisitedPages().add(pageId);
 
             collector.collect(JSON.toJSONString(wrapperBean.getLogBean()));
 
@@ -178,14 +194,23 @@ public class LogRunnable implements Runnable {
     }
 
     public void setRandomEvent(LogBean logBean){
-        int pCnt = RandomUtils.nextInt(1, 5); // 属性个数
+        /*int pCnt = RandomUtils.nextInt(1, 5); // 属性个数
         logBean.setEventId("e_"+RandomStringUtils.randomAlphabetic(2).toLowerCase()+"_"+pCnt);
 
         HashMap<String, String> properties = new HashMap<String, String>();
         for (int i = 0; i < pCnt; i++) {
             properties.put("p" + RandomUtils.nextInt(10, 20), "v" + RandomUtils.nextInt(1, 10));
         }
-        properties.put("pageId", logBean.getProperties().get("pageId"));
+        properties.put("pageId", logBean.getProperties().get("pageId"));*/
+
+        ActionEvent randomEvent = UserUtils.getRandomEvent();
+        String eventId = randomEvent.getEventId();
+        Map<String, String> properties = randomEvent.getProperties().get(RandomUtils.nextInt(0, randomEvent.getProperties().size()));
+        if(null !=properties.get("itemId")){
+            properties.put("itemId","item"+StringUtils.leftPad(RandomUtils.nextInt(1,50)+"",2,"0"));
+        }
+
+        logBean.setEventId(eventId);
         logBean.setProperties(properties);
     }
 }

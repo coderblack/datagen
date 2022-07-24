@@ -170,8 +170,8 @@ public class LogRunnable implements Runnable {
             Thread.sleep(10*slowFactor);
 
             // 获取新页面
-            String pageId = "page" + StringUtils.leftPad(RandomUtils.nextInt(1, 3)+"",3,"0");
-            wrapperBean.getLogBean().setEventId("pageload");
+            String pageId = "page" + StringUtils.leftPad(RandomUtils.nextInt(1, 50)+"",3,"0");
+            wrapperBean.getLogBean().setEventId("pageLoad");
             HashMap<String, String> props = new HashMap<String, String>();
             props.put("pageId", pageId);
             props.put("referPage",wrapperBean.getVisitedPages().get(RandomUtils.nextInt(0,wrapperBean.getVisitedPages().size())));
